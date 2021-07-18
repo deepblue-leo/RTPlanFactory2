@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "RT Plan Factory";
+}
+
+<div class="text-center">
+    <h1 class="display-4">批量复制放疗计划</h1>
+    <form action="~/Home/GetRtPlanName" method="get">
+        <button id="BtnSelectRTPlan">请选择原始放疗计划</button>  <input type="text" name="RtPlanName"/><p /><p />
+        <button id="BtnSelectCTImage">请选择关联的CT图像</button>  <input type="text" /><p /><p />
+        <button id="BtnSelectRTStructure">请选择关联的结构集</button>  <input type="text" /><p /><p />
+        <input type="submit" value="执行" />
+    </form>
+</div>
+
+<div>
+    <p>
+        请选择您要创建的治疗计划类型：
+        <menu>
+            <li><input type="radio" name="rtplantype" id="vmat" value="vmat" onclick="setRtPlanType(this.value)" />VMAT</li>
+            <li><input type="radio" name="rtplantype" id="imrt" value="imrt" onclick="setRtPlanType(this.value)"/>IMRT</li>
+            <li><input type="radio" name="rtplantype" id="static" value="static" onclick="setRtPlanType(this.value)"/>STATIC</li>
+        </menu>
+    </p>
+    <p>
+        <input type="text" id="txtRtPlanType" value="" />
+    </p>
+    
+</div>
+
+<script type="text/javascript">
+    function setRtPlanType(params) {
+        document.getElementById('txtRtPlanType').value = params;
+    }
+</script>
+
+
+
