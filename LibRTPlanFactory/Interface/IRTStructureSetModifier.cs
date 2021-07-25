@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RTPlanFactory.Interface
+namespace LibRTPlanFactory.Interface
 {
     public interface IRTStructureSetModifier:IDicomModifier
     {

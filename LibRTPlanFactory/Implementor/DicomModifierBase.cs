@@ -1,7 +1,8 @@
 ﻿using System;
-using RTPlanFactory.Interface;
+using System.Collections.Generic;
+using LibRTPlanFactory.Interface;
 
-namespace RTPlanFactory.Implementor
+namespace LibRTPlanFactory.Implementor
 {
     public class DicomModifierBase:IDicomModifier
     {
@@ -65,7 +66,7 @@ namespace RTPlanFactory.Implementor
             return AddOrUpdateValue(_dds, Dicom.DicomTag.StudyInstanceUID, newStudyInstanceUid);
         }
 
-        static public string GetOriginalTagValue(Dicom.DicomDataset dds, Dicom.DicomTag tag)
+        static protected string GetOriginalTagValue(Dicom.DicomDataset dds, Dicom.DicomTag tag)
         {
             return dds.GetValueOrDefault<string>(tag, 0, null);
         }
@@ -76,26 +77,49 @@ namespace RTPlanFactory.Implementor
         /// <param name="dds">Dicom Dataset</param>
         /// <param name="tags">按级别放入tag，前面的tag都应该是sequence类型，只有最后一个tag才是要具体取值的</param>
         /// <returns></returns>
-        static public string[] GetOriginalTagValues(Dicom.DicomDataset dds, Dicom.DicomTag[] tags)
-        {
-            Dicom.DicomSequence seq = null;
-
-            for (int i = 0; i < tags.Length - 1; i++)
+        static protected void GetOriginalTagValues(Dicom.DicomDataset dds, Dicom.DicomTag[] tags, ref List<string> values)
+        { 
+            for (int i = 0; i < tags.Length; i++)
             {
-                seq = dds.GetSequence(tags[i]);
+                Dicom.DicomSequence seq;
+                if (dds.TryGetSequence(tags[i], out seq) && seq.Items.Count > 0)
+                {
+                    foreach (var item in seq.Items)
+                    {
+                        GetOriginalTagValues(item, GetPartOfTagArray(tags, i + 1, tags.Length - 1 - i), ref values);
+                    }                    
+                }
+                else
+                {
+                    if (dds.TryGetSingleValue<string>(tags[i], out string value))
+                    {
+                        values.Add(value);
+                    }
+                    //values.Add(dds.GetSingleValueOrDefault<string>(tags[i],null));
+                }                
             }       
         }
 
-        static public bool AddOrUpdateValue(Dicom.DicomDataset dds, Dicom.DicomTag tag, string value)
+        static private Dicom.DicomTag[] GetPartOfTagArray(Dicom.DicomTag[] tags, int start, int length)
+        {
+            Dicom.DicomTag[] newTagArray = new Dicom.DicomTag[length];
+            for (int i = 0; i < length; i++)
+            {
+                newTagArray[i] = tags[start + i];
+            }
+
+            return newTagArray;
+        }
+
+        static protected bool AddOrUpdateValue(Dicom.DicomDataset dds, Dicom.DicomTag tag, string value)
         {
             bool ret = false;
-
             try
             {
                 dds.AddOrUpdate<string>(tag, value);
                 ret = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
@@ -103,17 +127,28 @@ namespace RTPlanFactory.Implementor
             return ret;
         }
 
-        static public bool AddOrUpdateValues(Dicom.DicomDataset dds, Dicom.DicomTag tag, string[] values)
+        static protected void AddOrUpdateValues(Dicom.DicomDataset dds, Dicom.DicomTag[] tags, List<string> values)
         {
-            bool ret = false;
-
-            try
+            for (int i = 0; i < tags.Length; i++)
             {
-                dds.
-            }
-            catch (Exception ex)
-            {
-
+                Dicom.DicomSequence seq;
+                if (dds.TryGetSequence(tags[i], out seq) && seq.Items.Count > 0)
+                {
+                    foreach (var item in seq.Items)
+                    {
+                        AddOrUpdateValues(item, GetPartOfTagArray(tags, i + 1, tags.Length - 1 - i), values);
+                    }
+                }
+                else
+                {
+                    //if (dds.TryGetSingleValue<string>(tags[i], out string value))
+                    //{
+                    //    values.Add(value);
+                    //}
+                    //values.Add(dds.GetSingleValueOrDefault<string>(tags[i],null));
+                    dds.AddOrUpdate(tags[i], values[0]);
+                    values.RemoveAt(0);
+                }
             }
         }
     }

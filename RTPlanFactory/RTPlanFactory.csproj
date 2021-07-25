@@ -9,10 +9,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Dlls\" />
-    <None Remove="Implementor\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interface\" />
-    <Folder Include="Implementor\" />
   </ItemGroup>
 </Project>
