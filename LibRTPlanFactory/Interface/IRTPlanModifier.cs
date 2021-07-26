@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LibRTPlanFactory.Interface
+namespace RTPlanFactoryLib.Interface
 {
     public interface IRTPlanModifier
     {

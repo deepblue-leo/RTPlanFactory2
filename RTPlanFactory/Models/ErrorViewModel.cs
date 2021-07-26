@@ -1,6 +1,6 @@
 using System;
 
-namespace RTPlanFactory.Models
+namespace RTPlanFactoryWeb.Models
 {
     public class ErrorViewModel
     {

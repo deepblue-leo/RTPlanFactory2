@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Dicom;
-using LibRTPlanFactory.Implementor;
+using RTPlanFactoryLib.Implementor;
 
 namespace RTPlanFactoryConsole
 {

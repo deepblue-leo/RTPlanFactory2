@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>RTPlanFactoryWeb</AssemblyName>
+    <RootNamespace>RTPlanFactoryWeb</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="fo-dicom" Version="4.0.7" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Dlls\" />
+  </ItemGroup>
+</Project>

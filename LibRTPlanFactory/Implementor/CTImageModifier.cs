@@ -1,7 +1,7 @@
 ﻿using System;
-using LibRTPlanFactory.Interface;
+using RTPlanFactoryLib.Interface;
 
-namespace LibRTPlanFactory.Implementor
+namespace RTPlanFactoryLib.Implementor
 {
     public class CTImageModifier:DicomModifierBase,ICTImageModifier
     {

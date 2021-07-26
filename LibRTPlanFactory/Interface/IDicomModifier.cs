@@ -1,5 +1,5 @@
 ﻿using System;
-namespace LibRTPlanFactory.Interface
+namespace RTPlanFactoryLib.Interface
 {
     public interface IDicomModifier
     {

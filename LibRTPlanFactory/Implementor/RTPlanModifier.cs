@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Dicom;
-using LibRTPlanFactory.Interface;
+using RTPlanFactoryLib.Interface;
 
-namespace LibRTPlanFactory.Implementor
+namespace RTPlanFactoryLib.Implementor
 {
     public class RTPlanModifier : DicomModifierBase, IRTPlanModifier
     {

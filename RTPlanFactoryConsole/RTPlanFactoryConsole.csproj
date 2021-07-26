@@ -6,6 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LibRTPlanFactory\LibRTPlanFactory.csproj" />
+    <ProjectReference Include="..\RTPlanFactoryLib\RTPlanFactoryLib.csproj" />
   </ItemGroup>
 </Project>
