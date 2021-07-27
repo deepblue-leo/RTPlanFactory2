@@ -77,7 +77,7 @@ namespace RTPlanFactoryLib.Implementor
         /// <param name="dds">Dicom Dataset</param>
         /// <param name="tags">按级别放入tag，前面的tag都应该是sequence类型，只有最后一个tag才是要具体取值的</param>
         /// <returns></returns>
-        static protected void GetOriginalTagValues(Dicom.DicomDataset dds, Dicom.DicomTag[] tags, ref List<string> values)
+        static public void GetOriginalTagValues(Dicom.DicomDataset dds, Dicom.DicomTag[] tags, ref List<string> values)
         { 
             for (int i = 0; i < tags.Length; i++)
             {
@@ -127,7 +127,7 @@ namespace RTPlanFactoryLib.Implementor
             return ret;
         }
 
-        static protected void AddOrUpdateValues(Dicom.DicomDataset dds, Dicom.DicomTag[] tags, List<string> values)
+        static public void AddOrUpdateValues(Dicom.DicomDataset dds, Dicom.DicomTag[] tags, List<string> values)
         {
             for (int i = 0; i < tags.Length; i++)
             {

@@ -4,11 +4,14 @@ using System.Text;
 
 namespace RTPlanFactoryLib.Model
 {
-    public class RsInfo
-    {
-        public string PatientId { get; set; }
-        public string PatientName { get; set; }
-        public string SopInstanceUID { get; set; }
+    public class RsInfo:InfoBase
+    {        
         public List<string> ReferencedCtImgSopInstanceUIDs { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("Find A RT Structure Set that SopInstanceUid = {0}, PatientId = {1}, ReferencedCtImageCount = {2}",
+                this.SopInstanceUID, this.PatientId, this.ReferencedCtImgSopInstanceUIDs.Count);
+        }
     }
 }

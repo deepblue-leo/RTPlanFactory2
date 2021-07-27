@@ -4,10 +4,12 @@ using System.Text;
 
 namespace RTPlanFactoryLib.Model
 {
-    public class CtImgInfo
+    public class CtImgInfo : InfoBase
     {
-        public string PatientId { get; set; }
-        public string PatientName { get; set; }
-        public string SopInstanceUID { get; set; }
+        public override string ToString()
+        {
+            return string.Format("Find A CT Image that SopInstanceUid = {0}, PatientId = {1}",
+                this.SopInstanceUID,this.PatientId);
+        }
     }
 }

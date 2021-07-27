@@ -4,13 +4,16 @@ using System.Text;
 
 namespace RTPlanFactoryLib.Model
 {
-    public class RpInfo
-    {
-        public string PatientId { get; set; }
-        public string PatientName { get; set; }        
-        public string SopInstanceUID { get; set; }
+    public class RpInfo:InfoBase
+    {        
         public string PlanLabel { get; set; }
         public List<string> ReferencedRsSopInstanceUIDs { get; set; }
         public List<string> ReferencedRdSopInstanceUIDs { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("Find A RT Plan that SopInstanceUid = {0}, PatientId = {1}, PlanLabel = {2}",
+                this.SopInstanceUID, this.PatientId,this.PlanLabel);
+        }
     }
 }
