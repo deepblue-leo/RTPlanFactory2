@@ -447,7 +447,11 @@ namespace RTPlanFactoryLib.Implementor
 
                 DicomModifierBase.AddOrUpdateValues(
                     dds,
-                    new DicomTag[] { DicomTag.ContourImageSequence, DicomTag.ReferencedSOPInstanceUID },
+                    new DicomTag[] {
+                        DicomTag.ROIContourSequence,
+                        DicomTag.ContourSequence,
+                        DicomTag.ContourImageSequence, 
+                        DicomTag.ReferencedSOPInstanceUID },
                     ((RsInfo)info.NewSopInfo).ReferencedCtImgSopInstanceUIDs);
 
                 dFile.Save(info.NewFilePath);

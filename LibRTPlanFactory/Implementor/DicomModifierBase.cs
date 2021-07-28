@@ -134,7 +134,7 @@ namespace RTPlanFactoryLib.Implementor
             for (int i = 0; i < tags.Length; i++)
             {
                 Dicom.DicomSequence seq;
-                if (dds.TryGetSequence(tags[i], out seq) && seq.Items.Count > 0)
+                if (dds.TryGetSequence(tags[i], out seq) /*&& seq.Items.Count > 0*/)
                 {
                     foreach (var item in seq.Items)
                     {
