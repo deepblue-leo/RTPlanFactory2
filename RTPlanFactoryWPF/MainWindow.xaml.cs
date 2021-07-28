@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -52,8 +53,23 @@ namespace RTPlanFactoryWPF
 
         private void ShowListNewPlanInfo(DicomFileInfo info)
         {
-            string showlog = string.Format("[{0}]:{1},{2}", info.SopType, info.NewFilePath, info.NewSopInfo.ToString());
-            this.ListNewPlanInfo.Items.Add(showlog);
+            //new Thread(() =>
+            //{
+            //    this.Dispatcher.Invoke(new Action(() =>
+            //    {
+            //        string showlog = string.Format("[{0}]:{1},{2}", info.SopType, info.NewFilePath, info.NewSopInfo.ToString());
+            //        this.ListNewPlanInfo.Items.Add(showlog);
+            //    }));
+            //}).Start();
+
+            ThreadPool.QueueUserWorkItem(obj =>
+            {                
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    string showlog = string.Format("[{0}]:{1},{2}", info.SopType, info.NewFilePath, info.NewSopInfo.ToString());
+                    this.ListNewPlanInfo.Items.Add(showlog);                    
+                }));
+            });
         }
 
         private void BtnStart_Click(object sender, RoutedEventArgs e)
@@ -100,6 +116,9 @@ namespace RTPlanFactoryWPF
 
                     for (int i = 1; i <= newPlanCount; i++)
                     {
+                        //还原路径
+                        newFileSetFolder = string.Format("{0}\\{1}\\", dialog.SelectedPath, newPatientName);
+
                         newFileSetFolder = string.Format("{0}{1}\\", newFileSetFolder, i);
                         newPlanLabel = GetNewPlanLabel(newPatientName, i);
                         _workflowImplementer.CreateNewRpSets(newFileSetFolder, newPatientName, newPatientId, newPlanLabel, ShowListNewPlanInfo);
@@ -117,6 +136,9 @@ namespace RTPlanFactoryWPF
                     
                     for (int i = 1; i <= newPlanCount; i++)
                     {
+                        //还原路径
+                        newFileSetFolder = dialog.SelectedPath;
+
                         newPatientName = GetNewPatientName();
                         newPatientId = GetNewPatientId();
                         newFileSetFolder = string.Format("{0}\\{1}\\{2}\\", newFileSetFolder, newPatientName, 1);

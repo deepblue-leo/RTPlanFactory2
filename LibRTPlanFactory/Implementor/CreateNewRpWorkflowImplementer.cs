@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System.Threading;
 using Dicom;
 using RTPlanFactoryLib.Interface;
 using RTPlanFactoryLib.Model;
@@ -121,6 +122,13 @@ namespace RTPlanFactoryLib.Implementor
 
                 item.NewFilePath = newFileSetFolder + "CI" + item.NewSopInfo.SopInstanceUID + ".dcm";                
                 CopyandUpdateNewCtImgInfo(item);
+
+                if (null != item)
+                {
+                    //new Thread(() => {
+                        handleSopInfo(item);
+                        //}).Start();                                        
+                }
             }
 
             //获取RS，并修改RsInfo
@@ -137,6 +145,11 @@ namespace RTPlanFactoryLib.Implementor
                 rsSopInstanceUidList.Add(item.NewSopInfo.SopInstanceUID);
                 item.NewFilePath = newFileSetFolder + "RS" + item.NewSopInfo.SopInstanceUID + ".dcm";
                 CopyandUpdateNewRsInfo(item);
+
+                if (null != item)
+                {
+                    handleSopInfo(item);
+                }
             }
 
             //获取RD，并修改RdInfo
@@ -152,6 +165,11 @@ namespace RTPlanFactoryLib.Implementor
                 rdSopInstanceUidList.Add(item.NewSopInfo.SopInstanceUID);
                 item.NewFilePath = newFileSetFolder + "RD" + item.NewSopInfo.SopInstanceUID + ".dcm";
                 CopyandUpdateNewRdInfo(item);
+
+                if (null != item)
+                {
+                    handleSopInfo(item);
+                }
             }
 
             //获取RP，并修改RpInfo
@@ -170,6 +188,11 @@ namespace RTPlanFactoryLib.Implementor
                 rpSopInstanceUidList.Add(item.NewSopInfo.SopInstanceUID);
                 item.NewFilePath = newFileSetFolder + "RP" + item.NewSopInfo.SopInstanceUID + ".dcm";
                 CopyandUpdateNewRpInfo(item);
+
+                if (null != item)
+                {
+                    handleSopInfo(item);
+                }
             }
 
             //获取Rt Img，并修改RtImgInfo
@@ -185,7 +208,12 @@ namespace RTPlanFactoryLib.Implementor
                 };                
                 item.NewFilePath = newFileSetFolder + "RI" + item.NewSopInfo.SopInstanceUID + ".dcm";
                 CopyandUpdateNewRtImgInfo(item);
-            }
+
+                if (null != item)
+                {
+                    handleSopInfo(item);
+                }
+            }            
         }
 
         /// <summary>
@@ -372,7 +400,7 @@ namespace RTPlanFactoryLib.Implementor
                 dds.AddOrUpdate<string>(DicomTag.PatientName, info.NewSopInfo.PatientName);
                 dds.AddOrUpdate<string>(DicomTag.SOPInstanceUID, info.NewSopInfo.SopInstanceUID);
 
-                dFile.Save(info.NewFilePath);
+                dFile.SaveAsync(info.NewFilePath);                
                 ret = true;
             }
             catch (Exception)
@@ -413,7 +441,7 @@ namespace RTPlanFactoryLib.Implementor
                     new DicomTag[] { DicomTag.ReferencedStructureSetSequence, DicomTag.ReferencedSOPInstanceUID },
                     ((RpInfo)info.NewSopInfo).ReferencedRsSopInstanceUIDs);
 
-                dFile.Save(info.NewFilePath);
+                dFile.SaveAsync(info.NewFilePath);
                 ret = true;
             }
             catch (Exception)
@@ -454,7 +482,7 @@ namespace RTPlanFactoryLib.Implementor
                         DicomTag.ReferencedSOPInstanceUID },
                     ((RsInfo)info.NewSopInfo).ReferencedCtImgSopInstanceUIDs);
 
-                dFile.Save(info.NewFilePath);
+                dFile.SaveAsync(info.NewFilePath);
                 ret = true;
             }
             catch (Exception)
@@ -491,7 +519,7 @@ namespace RTPlanFactoryLib.Implementor
                     new DicomTag[] { DicomTag.ReferencedRTPlanSequence, DicomTag.ReferencedSOPInstanceUID },
                     ((RtImgInfo)info.NewSopInfo).ReferencedRpSopInstanceUIDs);
 
-                dFile.Save(info.NewFilePath);
+                dFile.SaveAsync(info.NewFilePath);
                 ret = true;
             }
             catch (Exception)

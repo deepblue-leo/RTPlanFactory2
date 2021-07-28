@@ -133,23 +133,40 @@ namespace RTPlanFactoryLib.Implementor
         {
             for (int i = 0; i < tags.Length; i++)
             {
-                Dicom.DicomSequence seq;
-                if (dds.TryGetSequence(tags[i], out seq) /*&& seq.Items.Count > 0*/)
+                if (dds.TryGetSequence(tags[i], out Dicom.DicomSequence seq) /*&& seq.Items.Count > 0*/)
                 {
                     foreach (var item in seq.Items)
                     {
-                        AddOrUpdateValues(item, GetPartOfTagArray(tags, i + 1, tags.Length - 1 - i), values);
+                        try
+                        {
+                            AddOrUpdateValues(item, GetPartOfTagArray(tags, i + 1, tags.Length - 1 - i), values);
+                        }
+                        catch (Exception ex)
+                        {
+
+                            throw ex;
+                        }                        
                     }
                 }
                 else
                 {
-                    //if (dds.TryGetSingleValue<string>(tags[i], out string value))
-                    //{
-                    //    values.Add(value);
-                    //}
-                    //values.Add(dds.GetSingleValueOrDefault<string>(tags[i],null));
-                    dds.AddOrUpdate(tags[i], values[0]);
-                    values.RemoveAt(0);
+                    //只针对最后一个Tag进行值的更新
+                    if (tags.Length == 1)
+                    {
+                        try
+                        {
+                            dds.AddOrUpdate(tags[i], values[0]);
+                            if (values.Count > 1)
+                            {
+                                values.RemoveAt(0);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+
+                            throw ex;
+                        }                                              
+                    }
                 }
             }
         }
