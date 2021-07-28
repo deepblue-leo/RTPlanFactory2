@@ -5,11 +5,11 @@ namespace RTPlanFactoryLib.Interface
 {
     public interface IRTStructureSetModifier:IDicomModifier
     {
-        public string GetOriginalStructureSetLabel();
-        public bool SetNewStructureSetLabel(string newLabel);
-        public string GetOriginalStructureSetName();
-        public bool SetNewStructureSetName(string newName);
-        public string[] GetOriginalReferencedImageSopInstanceUidSeq();
-        public bool SetNewReferencedImageSopInstanceUidSeq(string[] newImgUids);
+        string GetOriginalStructureSetLabel();
+        bool SetNewStructureSetLabel(string newLabel);
+        string GetOriginalStructureSetName();
+        bool SetNewStructureSetName(string newName);
+        string[] GetOriginalReferencedImageSopInstanceUidSeq();
+        bool SetNewReferencedImageSopInstanceUidSeq(string[] newImgUids);
     }
 }

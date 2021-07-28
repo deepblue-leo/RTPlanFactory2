@@ -7,11 +7,10 @@
         mc:Ignorable="d"
         Title="RT Plan Factory" Height="700" Width="830">
     <Grid Margin="0,0,0,1">
-        <Button x:Name="BtnSelectRpFile" Content="选择RT Plan" HorizontalAlignment="Left" Margin="42,27,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+        <Button x:Name="BtnSelectRpFile" Content="选择RT Plan" HorizontalAlignment="Left" Margin="42,27,0,0" VerticalAlignment="Top" Width="75" Click="BtnSelectRpFile_Click"/>
         <TextBox x:Name="TxtRpFilePath" HorizontalAlignment="Left" Height="23" Margin="140,27,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="642"/>
-        <Label Content="请确保RTPlan、CT Image、Structure Set、RTDose都放在同一个文件夹中..." HorizontalAlignment="Left" Margin="135,50,0,0" VerticalAlignment="Top" Foreground="#FFEC0E0E"/>
-        <ListBox x:Name="ListOriginalPlanInfo" HorizontalAlignment="Left" Height="387" Margin="42,171,0,0" VerticalAlignment="Top" Width="365"/>
-        <Label Content="原计划信息" HorizontalAlignment="Left" Margin="37,151,0,0" VerticalAlignment="Top"/>
+        <Label Content="请确保RTPlan、CT Image、Structure Set、RTDose都放在同一个文件夹中，且目录中只能有一个RT Plan..." HorizontalAlignment="Left" Margin="135,50,0,0" VerticalAlignment="Top" Foreground="#FFEC0E0E"/>
+        <Label Content="原计划信息" HorizontalAlignment="Left" Margin="37,170,0,0" VerticalAlignment="Top"/>
         <CheckBox x:Name="ChkEditable" Content="Editable" HorizontalAlignment="Left" Margin="59,98,0,0" VerticalAlignment="Top"/>
         <Label Content="First Name" HorizontalAlignment="Left" Margin="140,92,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="TxtFirstName" HorizontalAlignment="Left" Height="23" Margin="217,94,0,0" TextWrapping="Wrap" Text="FactoryPatient" VerticalAlignment="Top" Width="120"/>
@@ -20,11 +19,14 @@
         <Label Content="创建" HorizontalAlignment="Left" Margin="608,94,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="TxtNewPlanNum" HorizontalAlignment="Left" Height="23" Margin="642,96,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="54"/>
         <Label Content="个新计划" HorizontalAlignment="Left" Margin="701,94,0,0" VerticalAlignment="Top"/>
-        <Label Content="新计划信息" HorizontalAlignment="Left" Margin="425,151,0,0" VerticalAlignment="Top"/>
-        <ListBox x:Name="ListNewPlanInfo" HorizontalAlignment="Left" Height="387" Margin="433,171,0,0" VerticalAlignment="Top" Width="349"/>
-        <Button x:Name="BtnStart" Content="开始" HorizontalAlignment="Left" Margin="707,605,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+        <Label Content="新计划信息" HorizontalAlignment="Left" Margin="37,375,0,0" VerticalAlignment="Top"/>
+        <ListBox x:Name="ListNewPlanInfo" HorizontalAlignment="Left" Height="183" Margin="37,405,0,0" VerticalAlignment="Top" Width="745"/>
+        <Button x:Name="BtnStart" Content="开始" HorizontalAlignment="Left" Margin="707,605,0,0" VerticalAlignment="Top" Width="75" Height="34" Click="BtnStart_Click"/>
         <Label Content="Plan Label" HorizontalAlignment="Left" Margin="140,122,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="TxtPlanLabel" HorizontalAlignment="Left" Height="23" Margin="217,128,0,0" TextWrapping="Wrap" Text="[FirstName]_[LastName]_FactoryPlan" VerticalAlignment="Top" Width="352" IsEnabled="False"/>
+        <TextBox x:Name="TxtPlanLabel" HorizontalAlignment="Left" Height="23" Margin="217,128,0,0" TextWrapping="Wrap" Text="[FirstName]_[LastName]_FactoryPlan[Number]" VerticalAlignment="Top" Width="352" IsEnabled="False"/>
+        <RadioButton x:Name="radioSinglePatientMultiPlan" Content="单患者多计划" HorizontalAlignment="Left" Margin="592,133,0,0" VerticalAlignment="Top"/>
+        <RadioButton x:Name="radioMultiPatientSinglePlan" Content="多患者单计划" HorizontalAlignment="Left" Margin="701,133,0,0" VerticalAlignment="Top" IsChecked="True"/>
+        <ListBox x:Name="ListOriginalPlanInfo" HorizontalAlignment="Left" Height="170" Margin="37,200,0,0" VerticalAlignment="Top" Width="745"/>
 
     </Grid>
 </Window>

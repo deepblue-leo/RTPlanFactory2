@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RTPlanFactoryLib.Model
 {
-    class RtImgInfo:InfoBase
+    public class RtImgInfo:InfoBase
     {        
         public List<string> ReferencedRpSopInstanceUIDs { get; set; }
 

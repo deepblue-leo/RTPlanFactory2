@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Numerics;
 using RTPlanFactoryLib.Interface;
 
 namespace RTPlanFactoryLib.Implementor
@@ -150,6 +152,16 @@ namespace RTPlanFactoryLib.Implementor
                     values.RemoveAt(0);
                 }
             }
+        }
+
+        public static string GuidToUidStringUsingStringAndParse(Guid value)
+        {
+
+            var guidBytes = string.Format("0{0:N}", value);
+
+            var bigInteger = BigInteger.Parse(guidBytes, NumberStyles.HexNumber);
+
+            return string.Format(CultureInfo.InvariantCulture, "2.25.{0}", bigInteger);
         }
     }
 }

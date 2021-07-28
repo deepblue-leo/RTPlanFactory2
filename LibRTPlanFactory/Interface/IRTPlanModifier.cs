@@ -5,11 +5,11 @@ namespace RTPlanFactoryLib.Interface
 {
     public interface IRTPlanModifier
     {
-        public string GetOriginalPlanLabel();
-        public bool SetNewPlanLabel(string newPlanLabel);
-        public void GetOriginalReferencedStructureSetUidSeq(ref List<string> values);
-        public bool SetNewReferencedStructureSetUidSeq(List<string> uids);
-        public void GetOriginalReferencedDoseUidSeq(ref List<string> values);
-        public bool SetNewReferencedDoseUidSeq(List<string> uids);
+        string GetOriginalPlanLabel();
+        bool SetNewPlanLabel(string newPlanLabel);
+        void GetOriginalReferencedStructureSetUidSeq(ref List<string> values);
+        bool SetNewReferencedStructureSetUidSeq(List<string> uids);
+        void GetOriginalReferencedDoseUidSeq(ref List<string> values);
+        bool SetNewReferencedDoseUidSeq(List<string> uids);
     }
 }
