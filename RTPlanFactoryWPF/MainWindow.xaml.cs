@@ -34,6 +34,8 @@ namespace RTPlanFactoryWPF
 
         private void BtnSelectRpFile_Click(object sender, RoutedEventArgs e)
         {
+            this.ListOriginalPlanInfo.Items.Clear();
+
             FolderBrowserDialog dialog = new FolderBrowserDialog();
             dialog.Description = "请选择计划文件所在的目录";
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -45,38 +47,49 @@ namespace RTPlanFactoryWPF
             //this.ListOriginalPlanInfo.Items.MoveCurrentTo(this.ListOriginalPlanInfo.Items[this.ListOriginalPlanInfo.Items.Count - 1]);
         }
 
-        private void ShowListOriginalPlanInfo(DicomFileInfo info)
-        {
-            string showlog = string.Format("[{0}]:{1},{2}", info.SopType, info.OriginalFilePath, info.OrginalSopInfo.ToString());
-            this.ListOriginalPlanInfo.Items.Add(showlog);
+        private async void ShowListOriginalPlanInfo(DicomFileInfo info)
+        {            
+            await Task.Run(() =>
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    string showlog = string.Format("[{0}]:{1},{2}", info.SopType, info.OriginalFilePath, info.OrginalSopInfo.ToString());
+                    this.ListOriginalPlanInfo.Items.Add(showlog);
+
+                    this.ListOriginalPlanInfo.Items.MoveCurrentToLast();
+                    //this.ListNewPlanInfo.Focus();
+                    this.ListOriginalPlanInfo.SelectedItem = this.ListOriginalPlanInfo.Items.CurrentItem;
+                    this.ListOriginalPlanInfo.ScrollIntoView(this.ListOriginalPlanInfo.SelectedItem);
+                }));
+            });
         }
 
-        private void ShowListNewPlanInfo(DicomFileInfo info)
-        {
-            //new Thread(() =>
-            //{
-            //    this.Dispatcher.Invoke(new Action(() =>
-            //    {
-            //        string showlog = string.Format("[{0}]:{1},{2}", info.SopType, info.NewFilePath, info.NewSopInfo.ToString());
-            //        this.ListNewPlanInfo.Items.Add(showlog);
-            //    }));
-            //}).Start();
-
-            ThreadPool.QueueUserWorkItem(obj =>
-            {                
-                Dispatcher.BeginInvoke(new Action(() =>
+        private async void ShowListNewPlanInfo(DicomFileInfo info)
+        {            
+            await Task.Run(() =>
+            {
+                Dispatcher.Invoke(new Action(() =>
                 {
                     string showlog = string.Format("[{0}]:{1},{2}", info.SopType, info.NewFilePath, info.NewSopInfo.ToString());
-                    this.ListNewPlanInfo.Items.Add(showlog);                    
+                    this.ListNewPlanInfo.Items.Add(showlog);
+                    this.ListNewPlanInfo.Items.MoveCurrentToLast();
+                    //this.ListNewPlanInfo.Focus();
+                    this.ListNewPlanInfo.SelectedItem = this.ListNewPlanInfo.Items.CurrentItem;
+                    this.ListNewPlanInfo.ScrollIntoView(this.ListNewPlanInfo.SelectedItem);
                 }));
             });
         }
 
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
+            this.BtnStart.IsEnabled = false;
+
+            this.ListNewPlanInfo.Items.Clear();
+
             if (!int.TryParse(this.TxtNewPlanNum.Text, out int newPlanCount))
             {
                 MessageBox.Show("请输入正确的新计划数量");
+                this.BtnStart.IsEnabled = true;
                 return;
             }
 
@@ -149,6 +162,8 @@ namespace RTPlanFactoryWPF
                 default:
                     break;
             }
+
+            this.BtnStart.IsEnabled = true;
         }
 
         private string GetNewPatientName()

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Dicom;
 using RTPlanFactoryLib.Interface;
 using RTPlanFactoryLib.Model;
@@ -98,7 +99,7 @@ namespace RTPlanFactoryLib.Implementor
             }
         }        
 
-        public void CreateNewRpSets(string newFileSetFolder, string newPatientName, string newPatientId, string newPlanLabe, Action<DicomFileInfo> handleSopInfo)
+        public /*async*/ void CreateNewRpSets(string newFileSetFolder, string newPatientName, string newPatientId, string newPlanLabe, Action<DicomFileInfo> handleSopInfo)
         {
             List<string> ctImageSopInstanceUidList = new List<string>();
             List<string> rsSopInstanceUidList = new List<string>();
@@ -124,10 +125,8 @@ namespace RTPlanFactoryLib.Implementor
                 CopyandUpdateNewCtImgInfo(item);
 
                 if (null != item)
-                {
-                    //new Thread(() => {
-                        handleSopInfo(item);
-                        //}).Start();                                        
+                {                    
+                    handleSopInfo(item);                 
                 }
             }
 
