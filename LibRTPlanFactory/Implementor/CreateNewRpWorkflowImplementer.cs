@@ -391,9 +391,9 @@ namespace RTPlanFactoryLib.Implementor
             bool ret;
             try
             {
-                File.Copy(info.OriginalFilePath, info.NewFilePath);
+                //File.Copy(info.OriginalFilePath, info.NewFilePath);
 
-                DicomFile dFile = DicomFile.Open(info.NewFilePath);
+                DicomFile dFile = DicomFile.Open(info.OriginalFilePath);
                 DicomDataset dds = dFile.Dataset;
 
                 dds.AddOrUpdate<string>(DicomTag.PatientID, info.NewSopInfo.PatientId);
@@ -422,9 +422,9 @@ namespace RTPlanFactoryLib.Implementor
             bool ret;
             try
             {
-                File.Copy(info.OriginalFilePath, info.NewFilePath);
+                //File.Copy(info.OriginalFilePath, info.NewFilePath);
 
-                DicomFile dFile = DicomFile.Open(info.NewFilePath);
+                DicomFile dFile = DicomFile.Open(info.OriginalFilePath);
                 DicomDataset dds = dFile.Dataset;
 
                 dds.AddOrUpdate<string>(DicomTag.PatientID, info.NewSopInfo.PatientId);
@@ -464,9 +464,9 @@ namespace RTPlanFactoryLib.Implementor
 
             try
             {
-                File.Copy(info.OriginalFilePath, info.NewFilePath);
+                //File.Copy(info.OriginalFilePath, info.NewFilePath);
 
-                DicomFile dFile = DicomFile.Open(info.NewFilePath);
+                DicomFile dFile = DicomFile.Open(info.OriginalFilePath);
                 DicomDataset dds = dFile.Dataset;
 
                 dds.AddOrUpdate<string>(DicomTag.PatientID, info.NewSopInfo.PatientId);
@@ -505,9 +505,9 @@ namespace RTPlanFactoryLib.Implementor
 
             try
             {
-                File.Copy(info.OriginalFilePath, info.NewFilePath);
+                //File.Copy(info.OriginalFilePath, info.NewFilePath);
 
-                DicomFile dFile = DicomFile.Open(info.NewFilePath);
+                DicomFile dFile = DicomFile.Open(info.OriginalFilePath);
                 DicomDataset dds = dFile.Dataset;
 
                 dds.AddOrUpdate<string>(DicomTag.PatientID, info.NewSopInfo.PatientId);
