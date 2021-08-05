@@ -356,19 +356,20 @@ namespace RTPlanFactoryLib.Implementor
         {
             bool ret;
             try
-            {                
-                File.Copy(info.OriginalFilePath, info.NewFilePath);
+            {
+                //File.Copy(info.OriginalFilePath, info.NewFilePath);
 
-                DicomFile dFile = DicomFile.Open(info.NewFilePath);
+                //DicomFile dFile = DicomFile.Open(info.NewFilePath);
+                DicomFile dFile = DicomFile.Open(info.OriginalFilePath);
                 DicomDataset dds = dFile.Dataset;
 
                 dds.AddOrUpdate<string>(DicomTag.PatientID, info.NewSopInfo.PatientId);
                 dds.AddOrUpdate<string>(DicomTag.PatientName, info.NewSopInfo.PatientName);
                 dds.AddOrUpdate<string>(DicomTag.SOPInstanceUID, info.NewSopInfo.SopInstanceUID);
 
-
-
                 dFile.SaveAsync(info.NewFilePath);
+                
+                //dFile.Save(info.NewFilePath);
                 ret = true;
             }
             catch (Exception)
