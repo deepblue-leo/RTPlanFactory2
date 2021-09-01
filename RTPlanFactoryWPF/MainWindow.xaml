@@ -28,6 +28,8 @@
         <RadioButton x:Name="radioSinglePatientMultiPlan" Content="单患者多计划" HorizontalAlignment="Left" Margin="592,133,0,0" VerticalAlignment="Top"/>
         <RadioButton x:Name="radioMultiPatientSinglePlan" Content="多患者单计划" HorizontalAlignment="Left" Margin="701,133,0,0" VerticalAlignment="Top" IsChecked="True"/>
         <ListBox x:Name="ListOriginalPlanInfo" HorizontalAlignment="Left" Height="170" Margin="37,200,0,0" VerticalAlignment="Top" Width="745"/>
+        <Label Content="Machine Name" HorizontalAlignment="Left" Margin="140,156,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="TxtMachineName" HorizontalAlignment="Left" Height="23" Margin="242,159,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="327"/>
 
     </Grid>
 </Window>

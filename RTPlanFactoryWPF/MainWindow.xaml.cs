@@ -53,6 +53,11 @@ namespace RTPlanFactoryWPF
             {
                 Dispatcher.Invoke(new Action(() =>
                 {
+                    if (info.SopType == RTPlanFactoryLib.Utility.EnumSopType.RT_PLAN)
+                    {
+                        this.TxtMachineName.Text = ((RpInfo)(info.OrginalSopInfo)).TreatmentMachineNames[0];
+                    }
+                    
                     string showlog = string.Format("[{0}]:{1},{2}", info.SopType, info.OriginalFilePath, info.OrginalSopInfo.ToString());
                     this.ListOriginalPlanInfo.Items.Add(showlog);
 
@@ -92,6 +97,16 @@ namespace RTPlanFactoryWPF
                 this.BtnStart.IsEnabled = true;
                 return;
             }
+
+            string newMachineName = this.TxtMachineName.Text.Trim();
+
+            if (string.IsNullOrEmpty(newMachineName))
+            {
+                MessageBox.Show("请输入正确的设备名称");
+                this.BtnStart.IsEnabled = true;
+                return;
+            }            
+
 
             CreateNewPlanPattern npp = CreateNewPlanPattern.SinglePatientMultiPlan;
 
@@ -134,7 +149,7 @@ namespace RTPlanFactoryWPF
 
                         newFileSetFolder = string.Format("{0}{1}\\", newFileSetFolder, i);
                         newPlanLabel = GetNewPlanLabel(newPatientName, i);
-                        _workflowImplementer.CreateNewRpSets(newFileSetFolder, newPatientName, newPatientId, newPlanLabel, ShowListNewPlanInfo);
+                        _workflowImplementer.CreateNewRpSets(newFileSetFolder, newPatientName, newPatientId, newPlanLabel, newMachineName, ShowListNewPlanInfo);
                     }                    
                     break;
                 case CreateNewPlanPattern.MultiPatientSinglePlan:
@@ -156,7 +171,7 @@ namespace RTPlanFactoryWPF
                         newPatientId = GetNewPatientId();
                         newFileSetFolder = string.Format("{0}\\{1}\\{2}\\", newFileSetFolder, newPatientName, 1);
                         newPlanLabel = GetNewPlanLabel(newPatientName, 1);
-                        _workflowImplementer.CreateNewRpSets(newFileSetFolder, newPatientName, newPatientId, newPlanLabel, ShowListNewPlanInfo);
+                        _workflowImplementer.CreateNewRpSets(newFileSetFolder, newPatientName, newPatientId, newPlanLabel, newMachineName, ShowListNewPlanInfo);
                     }
                     break;
                 default:

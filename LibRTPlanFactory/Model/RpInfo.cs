@@ -9,6 +9,8 @@ namespace RTPlanFactoryLib.Model
         public string PlanLabel { get; set; }
         public List<string> ReferencedRsSopInstanceUIDs { get; set; }
         public List<string> ReferencedRdSopInstanceUIDs { get; set; }
+        public List<string> TreatmentMachineNames { get; set; } 
+        public int BeamCount { get; set; }
 
         public override string ToString()
         {

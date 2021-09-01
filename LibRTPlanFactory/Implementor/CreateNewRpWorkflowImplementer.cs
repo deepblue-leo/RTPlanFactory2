@@ -99,7 +99,7 @@ namespace RTPlanFactoryLib.Implementor
             }
         }        
 
-        public /*async*/ void CreateNewRpSets(string newFileSetFolder, string newPatientName, string newPatientId, string newPlanLabe, Action<DicomFileInfo> handleSopInfo)
+        public /*async*/ void CreateNewRpSets(string newFileSetFolder, string newPatientName, string newPatientId, string newPlanLabe, string newMachineName, Action<DicomFileInfo> handleSopInfo)
         {
             List<string> ctImageSopInstanceUidList = new List<string>();
             List<string> rsSopInstanceUidList = new List<string>();
@@ -175,6 +175,8 @@ namespace RTPlanFactoryLib.Implementor
             //这里重点是创建新的RP SopInstanceUID，以及将新的RS SopInstanceUID，RD SopInstanceUID更新进来
             foreach (var item in _originalDicomFileList.Where(a => a.SopType == EnumSopType.RT_PLAN))
             {
+                int beamCount = ((RpInfo)item.OrginalSopInfo).BeamCount;
+
                 item.NewSopInfo = new RpInfo
                 {
                     PatientId = newPatientId,
@@ -183,7 +185,14 @@ namespace RTPlanFactoryLib.Implementor
                     PlanLabel = newPlanLabe,
                     ReferencedRsSopInstanceUIDs = rsSopInstanceUidList,
                     ReferencedRdSopInstanceUIDs = rdSopInstanceUidList,
+                    TreatmentMachineNames = new List<string>(beamCount),                    
                 };
+                
+                for (int i = 0; i < beamCount; i++)
+                {
+                    ((RpInfo)item.NewSopInfo).TreatmentMachineNames.Add(newMachineName);
+                }
+                
                 rpSopInstanceUidList.Add(item.NewSopInfo.SopInstanceUID);
                 item.NewFilePath = newFileSetFolder + "RP" + item.NewSopInfo.SopInstanceUID + ".dcm";
                 CopyandUpdateNewRpInfo(item);
@@ -268,7 +277,7 @@ namespace RTPlanFactoryLib.Implementor
                 ret.PatientId = dds.GetString(DicomTag.PatientID);
                 ret.PatientName = dds.GetString(DicomTag.PatientName);
                 ret.SopInstanceUID = dds.GetString(DicomTag.SOPInstanceUID);
-                ret.PlanLabel = dds.GetString(DicomTag.RTPlanLabel);
+                ret.PlanLabel = dds.GetString(DicomTag.RTPlanLabel);                
 
                 //获得RP中refer的Dose文件的Instance UID
                 List<string> temList = new List<string>();
@@ -285,6 +294,17 @@ namespace RTPlanFactoryLib.Implementor
                     new DicomTag[] { DicomTag.ReferencedStructureSetSequence, DicomTag.ReferencedSOPInstanceUID },
                     ref temList);
                 ret.ReferencedRsSopInstanceUIDs = temList;
+
+                //获得RP中各Beam对应的TreatmentMachineName，理论上都应该是一致的
+                temList.Clear();
+                DicomModifierBase.GetOriginalTagValues(
+                    dds,
+                    new DicomTag[] { DicomTag.BeamSequence, DicomTag.TreatmentMachineName },
+                    ref temList);
+                ret.TreatmentMachineNames = temList;
+
+                //获取源计划中的射束个数
+                ret.BeamCount = ret.TreatmentMachineNames.Count;
             }
 
             return ret;
@@ -440,6 +460,11 @@ namespace RTPlanFactoryLib.Implementor
                     dds,
                     new DicomTag[] { DicomTag.ReferencedStructureSetSequence, DicomTag.ReferencedSOPInstanceUID },
                     ((RpInfo)info.NewSopInfo).ReferencedRsSopInstanceUIDs);
+
+                DicomModifierBase.AddOrUpdateValues(
+                    dds,
+                    new DicomTag[] { DicomTag.BeamSequence, DicomTag.TreatmentMachineName },
+                    ((RpInfo)info.NewSopInfo).TreatmentMachineNames);
 
                 dFile.SaveAsync(info.NewFilePath);
                 ret = true;
