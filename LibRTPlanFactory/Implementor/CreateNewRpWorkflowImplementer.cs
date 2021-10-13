@@ -386,7 +386,8 @@ namespace RTPlanFactoryLib.Implementor
                 dds.AddOrUpdate<string>(DicomTag.PatientID, info.NewSopInfo.PatientId);
                 dds.AddOrUpdate<string>(DicomTag.PatientName, info.NewSopInfo.PatientName);
                 dds.AddOrUpdate<string>(DicomTag.SOPInstanceUID, info.NewSopInfo.SopInstanceUID);
-
+                dFile.FileMetaInfo.AddOrUpdate<string>(DicomTag.MediaStorageSOPInstanceUID, info.NewSopInfo.SopInstanceUID);
+                
                 dFile.SaveAsync(info.NewFilePath);
                 
                 //dFile.Save(info.NewFilePath);
@@ -419,7 +420,7 @@ namespace RTPlanFactoryLib.Implementor
                 dds.AddOrUpdate<string>(DicomTag.PatientID, info.NewSopInfo.PatientId);
                 dds.AddOrUpdate<string>(DicomTag.PatientName, info.NewSopInfo.PatientName);
                 dds.AddOrUpdate<string>(DicomTag.SOPInstanceUID, info.NewSopInfo.SopInstanceUID);
-
+                dFile.FileMetaInfo.AddOrUpdate<string>(DicomTag.MediaStorageSOPInstanceUID, info.NewSopInfo.SopInstanceUID);
                 dFile.SaveAsync(info.NewFilePath);                
                 ret = true;
             }
@@ -466,6 +467,7 @@ namespace RTPlanFactoryLib.Implementor
                     new DicomTag[] { DicomTag.BeamSequence, DicomTag.TreatmentMachineName },
                     ((RpInfo)info.NewSopInfo).TreatmentMachineNames);
 
+                dFile.FileMetaInfo.AddOrUpdate<string>(DicomTag.MediaStorageSOPInstanceUID, info.NewSopInfo.SopInstanceUID);
                 dFile.SaveAsync(info.NewFilePath);
                 ret = true;
             }
@@ -506,6 +508,7 @@ namespace RTPlanFactoryLib.Implementor
                         DicomTag.ContourImageSequence, 
                         DicomTag.ReferencedSOPInstanceUID },
                     ((RsInfo)info.NewSopInfo).ReferencedCtImgSopInstanceUIDs);
+                dFile.FileMetaInfo.AddOrUpdate<string>(DicomTag.MediaStorageSOPInstanceUID, info.NewSopInfo.SopInstanceUID);
 
                 dFile.SaveAsync(info.NewFilePath);
                 ret = true;
@@ -543,7 +546,7 @@ namespace RTPlanFactoryLib.Implementor
                     dds,
                     new DicomTag[] { DicomTag.ReferencedRTPlanSequence, DicomTag.ReferencedSOPInstanceUID },
                     ((RtImgInfo)info.NewSopInfo).ReferencedRpSopInstanceUIDs);
-
+                dFile.FileMetaInfo.AddOrUpdate<string>(DicomTag.MediaStorageSOPInstanceUID, info.NewSopInfo.SopInstanceUID);
                 dFile.SaveAsync(info.NewFilePath);
                 ret = true;
             }

@@ -34,17 +34,17 @@ namespace RTPlanFactoryWPF
 
         private void BtnSelectRpFile_Click(object sender, RoutedEventArgs e)
         {
-            this.ListOriginalPlanInfo.Items.Clear();
+            ListOriginalPlanInfo.Items.Clear();
 
             FolderBrowserDialog dialog = new FolderBrowserDialog();
             dialog.Description = "请选择计划文件所在的目录";
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                this.TxtRpFilePath.Text = dialog.SelectedPath + "\\";
-                _workflowImplementer.LoopOriginalFileSetFolder(this.TxtRpFilePath.Text.Trim(), ShowListOriginalPlanInfo);
-            }
+            {                
+                ListNewPlanInfo.Items.Clear();
 
-            //this.ListOriginalPlanInfo.Items.MoveCurrentTo(this.ListOriginalPlanInfo.Items[this.ListOriginalPlanInfo.Items.Count - 1]);
+                this.TxtRpFilePath.Text = dialog.SelectedPath + "\\";
+                _workflowImplementer.LoopOriginalFileSetFolder(this.TxtRpFilePath.Text.Trim(), ShowListOriginalPlanInfo);                
+            }            
         }
 
         private async void ShowListOriginalPlanInfo(DicomFileInfo info)
