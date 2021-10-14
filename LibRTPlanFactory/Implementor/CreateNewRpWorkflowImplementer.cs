@@ -99,7 +99,8 @@ namespace RTPlanFactoryLib.Implementor
             }
         }        
 
-        public /*async*/ void CreateNewRpSets(string newFileSetFolder, string newPatientName, string newPatientId, string newPlanLabe, string newMachineName, Action<DicomFileInfo> handleSopInfo)
+        public /*async*/ void CreateNewRpSets(string newFileSetFolder, string newPatientName, string newPatientId, 
+            string newPlanLabe, string newMachineName, string newStudyInstanceUid, Action<DicomFileInfo> handleSopInfo)
         {
             List<string> ctImageSopInstanceUidList = new List<string>();
             List<string> rsSopInstanceUidList = new List<string>();
@@ -109,6 +110,13 @@ namespace RTPlanFactoryLib.Implementor
             if (!Directory.Exists(newFileSetFolder))
                 Directory.CreateDirectory(newFileSetFolder);
 
+            //创建新的CT Img Series UID
+            string newCtImgSeriesUid = DicomModifierBase.GuidToUidStringUsingStringAndParse(Guid.NewGuid());
+            string newRsSeriesUid = DicomModifierBase.GuidToUidStringUsingStringAndParse(Guid.NewGuid());
+            string newRdSeriesUid = DicomModifierBase.GuidToUidStringUsingStringAndParse(Guid.NewGuid());
+            string newRpSeriesUid = DicomModifierBase.GuidToUidStringUsingStringAndParse(Guid.NewGuid());
+            string newRiSeriesUid = DicomModifierBase.GuidToUidStringUsingStringAndParse(Guid.NewGuid());
+
             //获取所有的CT Image，并修改CtImgInfo
             //这里重点是创建新的CT Image SopInstanceUID
             foreach (var item in _originalDicomFileList.Where(a => a.SopType == EnumSopType.CT_IMG))
@@ -117,7 +125,9 @@ namespace RTPlanFactoryLib.Implementor
                 {
                     PatientId = newPatientId,
                     PatientName = newPatientName,
-                    SopInstanceUID = DicomModifierBase.GuidToUidStringUsingStringAndParse(Guid.NewGuid()),                    
+                    SopInstanceUID = DicomModifierBase.GuidToUidStringUsingStringAndParse(Guid.NewGuid()),
+                    StudyInstanceUID = newStudyInstanceUid,
+                    SeriesInstanceUID = newCtImgSeriesUid,
                 };
                 ctImageSopInstanceUidList.Add(item.NewSopInfo.SopInstanceUID);                                
 
@@ -139,7 +149,9 @@ namespace RTPlanFactoryLib.Implementor
                     PatientId = newPatientId,
                     PatientName = newPatientName,
                     SopInstanceUID = DicomModifierBase.GuidToUidStringUsingStringAndParse(Guid.NewGuid()),
-                    ReferencedCtImgSopInstanceUIDs = ctImageSopInstanceUidList
+                    ReferencedCtImgSopInstanceUIDs = ctImageSopInstanceUidList,
+                    StudyInstanceUID = newStudyInstanceUid,
+                    SeriesInstanceUID = newRsSeriesUid,
                 };
                 rsSopInstanceUidList.Add(item.NewSopInfo.SopInstanceUID);
                 item.NewFilePath = newFileSetFolder + "RS" + item.NewSopInfo.SopInstanceUID + ".dcm";
@@ -159,7 +171,9 @@ namespace RTPlanFactoryLib.Implementor
                 {
                     PatientId = newPatientId,
                     PatientName = newPatientName,
-                    SopInstanceUID = DicomModifierBase.GuidToUidStringUsingStringAndParse(Guid.NewGuid()),                    
+                    SopInstanceUID = DicomModifierBase.GuidToUidStringUsingStringAndParse(Guid.NewGuid()),
+                    StudyInstanceUID = newStudyInstanceUid,
+                    SeriesInstanceUID = newRdSeriesUid,
                 };
                 rdSopInstanceUidList.Add(item.NewSopInfo.SopInstanceUID);
                 item.NewFilePath = newFileSetFolder + "RD" + item.NewSopInfo.SopInstanceUID + ".dcm";
@@ -185,7 +199,9 @@ namespace RTPlanFactoryLib.Implementor
                     PlanLabel = newPlanLabe,
                     ReferencedRsSopInstanceUIDs = rsSopInstanceUidList,
                     ReferencedRdSopInstanceUIDs = rdSopInstanceUidList,
-                    TreatmentMachineNames = new List<string>(beamCount),                    
+                    TreatmentMachineNames = new List<string>(beamCount),
+                    StudyInstanceUID = newStudyInstanceUid,
+                    SeriesInstanceUID = newRpSeriesUid,
                 };
                 
                 for (int i = 0; i < beamCount; i++)
@@ -213,6 +229,8 @@ namespace RTPlanFactoryLib.Implementor
                     PatientName = newPatientName,
                     SopInstanceUID = DicomModifierBase.GuidToUidStringUsingStringAndParse(Guid.NewGuid()),
                     ReferencedRpSopInstanceUIDs = rpSopInstanceUidList,
+                    StudyInstanceUID = newStudyInstanceUid,
+                    SeriesInstanceUID = newRiSeriesUid,
                 };                
                 item.NewFilePath = newFileSetFolder + "RI" + item.NewSopInfo.SopInstanceUID + ".dcm";
                 CopyandUpdateNewRtImgInfo(item);
@@ -387,7 +405,10 @@ namespace RTPlanFactoryLib.Implementor
                 dds.AddOrUpdate<string>(DicomTag.PatientName, info.NewSopInfo.PatientName);
                 dds.AddOrUpdate<string>(DicomTag.SOPInstanceUID, info.NewSopInfo.SopInstanceUID);
                 dFile.FileMetaInfo.AddOrUpdate<string>(DicomTag.MediaStorageSOPInstanceUID, info.NewSopInfo.SopInstanceUID);
-                
+
+                dds.AddOrUpdate<string>(DicomTag.StudyInstanceUID, info.NewSopInfo.StudyInstanceUID);
+                dds.AddOrUpdate<string>(DicomTag.SeriesInstanceUID, info.NewSopInfo.SeriesInstanceUID);
+
                 dFile.SaveAsync(info.NewFilePath);
                 
                 //dFile.Save(info.NewFilePath);
@@ -421,6 +442,10 @@ namespace RTPlanFactoryLib.Implementor
                 dds.AddOrUpdate<string>(DicomTag.PatientName, info.NewSopInfo.PatientName);
                 dds.AddOrUpdate<string>(DicomTag.SOPInstanceUID, info.NewSopInfo.SopInstanceUID);
                 dFile.FileMetaInfo.AddOrUpdate<string>(DicomTag.MediaStorageSOPInstanceUID, info.NewSopInfo.SopInstanceUID);
+
+                dds.AddOrUpdate<string>(DicomTag.StudyInstanceUID, info.NewSopInfo.StudyInstanceUID);
+                dds.AddOrUpdate<string>(DicomTag.SeriesInstanceUID, info.NewSopInfo.SeriesInstanceUID);
+
                 dFile.SaveAsync(info.NewFilePath);                
                 ret = true;
             }
@@ -468,6 +493,10 @@ namespace RTPlanFactoryLib.Implementor
                     ((RpInfo)info.NewSopInfo).TreatmentMachineNames);
 
                 dFile.FileMetaInfo.AddOrUpdate<string>(DicomTag.MediaStorageSOPInstanceUID, info.NewSopInfo.SopInstanceUID);
+
+                dds.AddOrUpdate<string>(DicomTag.StudyInstanceUID, info.NewSopInfo.StudyInstanceUID);
+                dds.AddOrUpdate<string>(DicomTag.SeriesInstanceUID, info.NewSopInfo.SeriesInstanceUID);
+
                 dFile.SaveAsync(info.NewFilePath);
                 ret = true;
             }
@@ -500,6 +529,12 @@ namespace RTPlanFactoryLib.Implementor
                 dds.AddOrUpdate<string>(DicomTag.PatientName, info.NewSopInfo.PatientName);
                 dds.AddOrUpdate<string>(DicomTag.SOPInstanceUID, info.NewSopInfo.SopInstanceUID);
 
+                dds.AddOrUpdate<string>(DicomTag.StudyInstanceUID, info.NewSopInfo.StudyInstanceUID);
+                dds.AddOrUpdate<string>(DicomTag.SeriesInstanceUID, info.NewSopInfo.SeriesInstanceUID);
+
+                //深拷贝List
+                List<string> tempRefercencedCtImgSopInsUids = new List<string>(((RsInfo)info.NewSopInfo).ReferencedCtImgSopInstanceUIDs);                    
+
                 DicomModifierBase.AddOrUpdateValues(
                     dds,
                     new DicomTag[] {
@@ -507,7 +542,21 @@ namespace RTPlanFactoryLib.Implementor
                         DicomTag.ContourSequence,
                         DicomTag.ContourImageSequence, 
                         DicomTag.ReferencedSOPInstanceUID },
-                    ((RsInfo)info.NewSopInfo).ReferencedCtImgSopInstanceUIDs);
+                    tempRefercencedCtImgSopInsUids);
+
+                //前面经过AddOrUpdateValues后，tempRefercencedCtImgSopInsUids被删到只剩1条数据，这里再次给它赋值
+                tempRefercencedCtImgSopInsUids = ((RsInfo)info.NewSopInfo).ReferencedCtImgSopInstanceUIDs;
+
+                DicomModifierBase.AddOrUpdateValues(
+                    dds,
+                    new DicomTag[] {
+                        DicomTag.ReferencedFrameOfReferenceSequence,
+                        DicomTag.RTReferencedStudySequence,
+                        DicomTag.RTReferencedSeriesSequence,
+                        DicomTag.ContourImageSequence,
+                        DicomTag.ReferencedSOPInstanceUID },
+                    tempRefercencedCtImgSopInsUids);
+
                 dFile.FileMetaInfo.AddOrUpdate<string>(DicomTag.MediaStorageSOPInstanceUID, info.NewSopInfo.SopInstanceUID);
 
                 dFile.SaveAsync(info.NewFilePath);
@@ -541,6 +590,8 @@ namespace RTPlanFactoryLib.Implementor
                 dds.AddOrUpdate<string>(DicomTag.PatientID, info.NewSopInfo.PatientId);
                 dds.AddOrUpdate<string>(DicomTag.PatientName, info.NewSopInfo.PatientName);
                 dds.AddOrUpdate<string>(DicomTag.SOPInstanceUID, info.NewSopInfo.SopInstanceUID);
+                dds.AddOrUpdate<string>(DicomTag.StudyInstanceUID, info.NewSopInfo.StudyInstanceUID);
+                dds.AddOrUpdate<string>(DicomTag.SeriesInstanceUID, info.NewSopInfo.SeriesInstanceUID);
 
                 DicomModifierBase.AddOrUpdateValues(
                     dds,

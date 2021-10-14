@@ -86,9 +86,7 @@ namespace RTPlanFactoryWPF
         }
 
         private void BtnStart_Click(object sender, RoutedEventArgs e)
-        {
-            this.BtnStart.IsEnabled = false;
-
+        {            
             this.ListNewPlanInfo.Items.Clear();
 
             if (!int.TryParse(this.TxtNewPlanNum.Text, out int newPlanCount))
@@ -122,23 +120,23 @@ namespace RTPlanFactoryWPF
             FolderBrowserDialog dialog = new FolderBrowserDialog();
             dialog.Description = "请选择新计划文件要保存的目录";
 
-            string newPatientName;
-            string newPatientId;
+            string newPatientName = GetNewPatientName();
+            string newPatientId = GetNewPatientId();
             string newFileSetFolder;
             string newPlanLabel;
+            string newStudyInstanceUid = GetNewStudyInstanceUid();
 
             switch (npp)
             {
-                case CreateNewPlanPattern.SinglePatientMultiPlan:
-                    newPatientName = GetNewPatientName();
-                    newPatientId = GetNewPatientId();
-                    
+                case CreateNewPlanPattern.SinglePatientMultiPlan:                                        
                     if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
+                        this.BtnStart.IsEnabled = false;
                         newFileSetFolder = string.Format("{0}\\{1}\\",dialog.SelectedPath, newPatientName);
                     }
                     else
                     {
+                        this.BtnStart.IsEnabled = true;
                         return;
                     }
 
@@ -149,7 +147,7 @@ namespace RTPlanFactoryWPF
 
                         newFileSetFolder = string.Format("{0}{1}\\", newFileSetFolder, i);
                         newPlanLabel = GetNewPlanLabel(newPatientName, i);
-                        _workflowImplementer.CreateNewRpSets(newFileSetFolder, newPatientName, newPatientId, newPlanLabel, newMachineName, ShowListNewPlanInfo);
+                        _workflowImplementer.CreateNewRpSets(newFileSetFolder, newPatientName, newPatientId, newPlanLabel, newMachineName, newStudyInstanceUid, ShowListNewPlanInfo);
                     }                    
                     break;
                 case CreateNewPlanPattern.MultiPatientSinglePlan:
@@ -165,13 +163,10 @@ namespace RTPlanFactoryWPF
                     for (int i = 1; i <= newPlanCount; i++)
                     {
                         //还原路径
-                        newFileSetFolder = dialog.SelectedPath;
-
-                        newPatientName = GetNewPatientName();
-                        newPatientId = GetNewPatientId();
+                        newFileSetFolder = dialog.SelectedPath;                        
                         newFileSetFolder = string.Format("{0}\\{1}\\{2}\\", newFileSetFolder, newPatientName, 1);
                         newPlanLabel = GetNewPlanLabel(newPatientName, 1);
-                        _workflowImplementer.CreateNewRpSets(newFileSetFolder, newPatientName, newPatientId, newPlanLabel, newMachineName, ShowListNewPlanInfo);
+                        _workflowImplementer.CreateNewRpSets(newFileSetFolder, newPatientName, newPatientId, newPlanLabel, newMachineName, newStudyInstanceUid, ShowListNewPlanInfo);
                     }
                     break;
                 default:
@@ -209,6 +204,11 @@ namespace RTPlanFactoryWPF
             newPlanLable.Replace("[Number]", planNumber.ToString());
 
             return newPlanLable;
+        }
+
+        private string GetNewStudyInstanceUid()
+        {
+            return DicomModifierBase.GuidToUidStringUsingStringAndParse(Guid.NewGuid());
         }
 
 
